@@ -8,7 +8,7 @@ from keyboards import *
 
 # Получаем токен из переменных окружения
 BOT_TOKEN = os.getenv('8404158706:AAEPZiiYaCeTKeYtxrFMxKGP6Cr2prKs09U')
-ADMIN_ID = int(os.getenv('6539897544'))
+ADMIN_ID = int(os.getenv('ADMIN_ID', '6539897544'))
 
 # Настройка логирования
 logging.basicConfig(level=logging.INFO)
