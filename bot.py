@@ -7,7 +7,7 @@ from database import db
 from keyboards import *
 
 # Получаем токен из переменных окружения
-BOT_TOKEN = os.getenv('8404158706:AAEPZiiYaCeTKeYtxrFMxKGP6Cr2prKs09U')
+BOT_TOKEN = os.getenv('BOT_TOKEN', '8404158706:AAEPZiiYaCeTKeYtxrFMxKGP6Cr2prKs09U')
 ADMIN_ID = int(os.getenv('ADMIN_ID', '6539897544'))
 
 # Настройка логирования
