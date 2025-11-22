@@ -1,20 +1,15 @@
-import logging
 import os
+import logging
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, CallbackContext
+from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
 
 # Токен бота
 BOT_TOKEN = "8404158706:AAEPZiiYaCeTKeYtxrFMxKGP6Cr2prKs09U"
-ADMIN_ID = 6539897544
 
 # Настройка логирования
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
-# Корзины пользователей
-user_carts = {}
-
-# Клавиатуры
+# Клавиатура
 def main_menu():
     keyboard = [
         [InlineKeyboardButton("🛍 Каталог товаров", callback_data="catalog")],
@@ -24,26 +19,40 @@ def main_menu():
     return InlineKeyboardMarkup(keyboard)
 
 # Команда /start
-def start(update: Update, context: CallbackContext):
-    user = update.message.from_user
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.effective_user
     welcome_text = f"""
 👋 Привет, {user.first_name}!
 
-Добро пожаловать в наш магазин!
-Магазин работает в тестовом режиме.
+✅ Бот работает! Магазин открыт!
 
-📱 Используйте кнопки ниже:
+🛍 Используйте кнопки ниже для навигации.
 """
-    update.message.reply_text(welcome_text, reply_markup=main_menu())
+    await update.message.reply_text(welcome_text, reply_markup=main_menu())
 
 # Обработчик кнопок
-def button_handler(update: Update, context: CallbackContext):
+async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
-    query.answer()
+    await query.answer()
     
     if query.data == "catalog":
-        query.edit_message_text("🛍 Каталог товаров:\n\nПока пусто! Добавьте товары через админку.", reply_markup=main_menu())
+        await query.edit_message_text("🛍 Каталог товаров:\n\nТовары появятся скоро!", reply_markup=main_menu())
     elif query.data == "about":
-        query.edit_message_text("🏪 О нашем магазине\n\nТестовый магазин в Telegram!", reply_markup=main_menu())
+        await query.edit_message_text("🏪 О нашем магазине\n\nТестовый Telegram магазин!", reply_markup=main_menu())
     elif query.data == "support":
-        query.edit_message_text("📞 Поддержка\n\nС
+        await query.edit_message_text("📞 Поддержка\n\nСвяжитесь с администратором.", reply_markup=main_menu())
+
+def main():
+    # Создаем приложение
+    application = Application.builder().token(BOT_TOKEN).build()
+    
+    # Добавляем обработчики
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CallbackQueryHandler(button_handler))
+    
+    # Запускаем бота
+    print("🛍 Бот-магазин запущен!")
+    application.run_polling()
+
+if __name__ == "__main__":
+    main()
